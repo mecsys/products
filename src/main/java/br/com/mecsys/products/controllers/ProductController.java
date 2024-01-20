@@ -43,7 +43,7 @@ public class ProductController {
             }
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(productRepository.findAll());
+        return ResponseEntity.status(HttpStatus.OK).body(productList);
     }
 
     @GetMapping("/products/{id}")
