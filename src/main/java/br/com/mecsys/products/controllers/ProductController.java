@@ -1,5 +1,6 @@
 package br.com.mecsys.products.controllers;
 
+import br.com.mecsys.products.ProductsApplication;
 import br.com.mecsys.products.dtos.ProductRecordDto;
 import br.com.mecsys.products.models.ProductModel;
 import br.com.mecsys.products.repositories.ProductRepository;
@@ -14,6 +15,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class ProductController {
@@ -30,6 +34,15 @@ public class ProductController {
 
     @GetMapping("/products")
     public ResponseEntity<List<ProductModel>> getAllProducts(){
+
+        List<ProductModel> productList = productRepository.findAll();
+        if(!productList.isEmpty()) {
+            for(ProductModel product: productList) {
+                UUID id = product.getIdProduct();
+                product.add(linkTo(methodOn(ProductController.class).getOneProduct(id)).withSelfRel());
+            }
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(productRepository.findAll());
     }
 
